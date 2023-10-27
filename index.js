@@ -1,6 +1,7 @@
-const morgan = require("morgan")
+const config = require("config")
 const helmet = require("helmet")
 const Joi = require("joi")
+const morgan = require("morgan")
 const logger = require("./logger")
 const auth = require("./Auther")
 const express = require("express")
@@ -10,14 +11,17 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static("public"))
 app.use(helmet())
+app.use(logger)
+app.use(auth)
+
+// Configuration
+console.log("Application Name: " + config.get("name"))
+console.log("Mail Server Name: " + config.get("mail.host"))
 
 if (app.get("env") === "development") {
   app.use(morgan("tiny"))
   console.log("Morgan enabled...")
 }
-
-app.use(logger)
-app.use(auth)
 
 const courses = [
   { id: 1, name: "course1" },
